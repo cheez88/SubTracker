@@ -731,8 +731,12 @@
 <div id="screenHistory" class="screen">
   <header>
     <div class="logo">⚽ Sub<span>Tracker</span></div>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--gray)">Season History</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button onclick="exportData()" style="font-family:'DM Sans',sans-serif;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;background:#ffffff12;border:1px solid #ffffff22;color:var(--off-white);border-radius:7px;padding:5px 10px;cursor:pointer;">⬆ Export</button>
+      <button onclick="triggerImport()" style="font-family:'DM Sans',sans-serif;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;background:#ffffff12;border:1px solid #ffffff22;color:var(--off-white);border-radius:7px;padding:5px 10px;cursor:pointer;">⬇ Import</button>
+    </div>
   </header>
+  <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="importData(event)">
   <div id="historyTeamTabs" class="history-team-tabs"></div>
   <div class="wrap" id="historyWrap" style="padding-top:12px"></div>
 </div>
@@ -1552,6 +1556,80 @@ function renderHistory() {
 function setHistoryFilter(val) {
   historyTeamFilter = val;
   renderHistory();
+}
+
+// ── EXPORT / IMPORT ──────────────────────────────────────────
+function exportData() {
+  var payload = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    teams:   loadTeams(),
+    history: loadHistory()
+  };
+  var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a');
+  var date = new Date().toISOString().slice(0,10);
+  a.href     = url;
+  a.download = 'subtracker-backup-' + date + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function triggerImport() {
+  el('importFileInput').value = '';
+  el('importFileInput').click();
+}
+
+function importData(evt) {
+  var file = evt.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var data = JSON.parse(e.target.result);
+      if (!data.version || (!data.teams && !data.history)) {
+        alert('This file doesn\'t look like a SubTracker backup.');
+        return;
+      }
+      var msg = 'Import this backup?\n\n';
+      if (data.teams)   msg += '• ' + data.teams.length   + ' team(s)\n';
+      if (data.history) msg += '• ' + data.history.length + ' match record(s)\n';
+      msg += '\nThis will MERGE with your existing data (no records will be deleted).';
+      if (!confirm(msg)) return;
+
+      // Merge teams (add any with new IDs)
+      if (data.teams && data.teams.length) {
+        var existing = loadTeams();
+        var existingIds = existing.map(function(t){ return t.id; });
+        data.teams.forEach(function(t) {
+          if (existingIds.indexOf(t.id) === -1) existing.push(t);
+        });
+        saveTeams(existing);
+      }
+
+      // Merge history (add any with new IDs)
+      if (data.history && data.history.length) {
+        var existingH = loadHistory();
+        var existingHIds = existingH.map(function(m){ return m.id; });
+        data.history.forEach(function(m) {
+          if (existingHIds.indexOf(m.id) === -1) existingH.push(m);
+        });
+        // Sort newest first
+        existingH.sort(function(a,b){ return b.id - a.id; });
+        saveHistory(existingH);
+      }
+
+      renderHistory();
+      renderTeams();
+      alert('Import complete!');
+    } catch(err) {
+      alert('Could not read the file. Make sure it\'s a valid SubTracker backup.');
+    }
+  };
+  reader.readAsText(file);
 }
 
 function buildSeasonSummary(history) {
