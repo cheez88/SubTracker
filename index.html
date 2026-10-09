@@ -161,14 +161,27 @@
     padding:14px 20px 12px; border-bottom:2px solid #ffffff14;
     background:linear-gradient(180deg,#220d0d 0%,transparent 100%);
   }
+
+  /* Timer + half bar — sits in body above scoreboard */
+  .match-time-bar {
+    display:flex; align-items:center; justify-content:center;
+    padding:14px 20px 14px;
+    border-bottom:1px solid #ffffff0a;
+  }
+  .time-half-box {
+    display:flex; align-items:center; gap:24px;
+    background:var(--card); border:1px solid #ffffff1a;
+    border-radius:14px; padding:12px 28px;
+    box-shadow:0 2px 16px #00000044, inset 0 1px 0 #ffffff0a;
+  }
   .timer-block { text-align:center; }
   .timer-label { font-size:0.55rem; text-transform:uppercase; letter-spacing:2px; color:var(--gray); margin-bottom:1px; }
-  .timer-display { font-family:'Bebas Neue',sans-serif; font-size:2.6rem; line-height:1; color:var(--white); transition:color 0.3s; }
+  .timer-display { font-family:'Bebas Neue',sans-serif; font-size:3rem; line-height:1; color:var(--white); transition:color 0.3s; }
   .timer-display.warning { color:#ff8c00; }
   .timer-display.over    { color:var(--red-light); }
-  .half-block { text-align:right; }
+  .half-block { text-align:center; }
   .half-label  { font-size:0.55rem; text-transform:uppercase; letter-spacing:2px; color:var(--gray); }
-  .half-number { font-family:'Bebas Neue',sans-serif; font-size:1.7rem; color:var(--white); line-height:1; }
+  .half-number { font-family:'Bebas Neue',sans-serif; font-size:2rem; color:var(--white); line-height:1; }
 
   /* SCOREBOARD */
   .scoreboard {
@@ -635,13 +648,21 @@
 
   <div class="match-header">
     <div class="logo">⚽ Sub<span>Tracker</span></div>
-    <div class="timer-block">
-      <div class="timer-label">Match Time</div>
-      <div class="timer-display" id="timerDisplay">00:00</div>
-    </div>
-    <div class="half-block">
-      <div class="half-label">Half</div>
-      <div class="half-number" id="halfDisplay">1</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--gray)">Match</div>
+  </div>
+
+  <!-- TIMER + HALF BAR -->
+  <div class="match-time-bar">
+    <div class="time-half-box">
+      <div class="timer-block">
+        <div class="timer-label">Match Time</div>
+        <div class="timer-display" id="timerDisplay">20:00</div>
+      </div>
+      <div style="width:1px;height:44px;background:#ffffff22;"></div>
+      <div class="half-block">
+        <div class="half-label">Half</div>
+        <div class="half-number" id="halfDisplay">1</div>
+      </div>
     </div>
   </div>
 
