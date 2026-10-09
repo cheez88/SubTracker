@@ -44,7 +44,7 @@
   .nav-tab:hover:not(.active) { color: var(--off-white); }
 
   /* ── SHARED BITS ── */
-  .wrap { padding: 18px 20px; }
+  .wrap { padding: 18px 20px 76px; }
   .section-head {
     font-family: 'Bebas Neue', sans-serif; font-size: 1rem;
     letter-spacing: 3px; color: var(--gray);
@@ -718,7 +718,7 @@
 
 <!-- ═══════════════ GLOBAL NAV ═══════════════ -->
 <!-- Rendered at bottom via JS so it floats above content on all screens -->
-<div id="globalNav" style="position:sticky;bottom:0;z-index:50"></div>
+<div id="globalNav" style="position:fixed;bottom:0;left:0;right:0;z-index:50"></div>
 
 <!-- ═══════════════ GOAL SCORER MODAL ═══════════════ -->
 <div class="modal-overlay" id="goalModal">
