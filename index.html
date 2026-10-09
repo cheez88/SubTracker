@@ -731,10 +731,7 @@
 <div id="screenHistory" class="screen">
   <header>
     <div class="logo">⚽ Sub<span>Tracker</span></div>
-    <div style="display:flex;align-items:center;gap:8px">
-      <button onclick="exportData()" style="font-family:'DM Sans',sans-serif;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;background:#ffffff12;border:1px solid #ffffff22;color:var(--off-white);border-radius:7px;padding:5px 10px;cursor:pointer;">⬆ Export</button>
-      <button onclick="triggerImport()" style="font-family:'DM Sans',sans-serif;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;background:#ffffff12;border:1px solid #ffffff22;color:var(--off-white);border-radius:7px;padding:5px 10px;cursor:pointer;">⬇ Import</button>
-    </div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--gray)">Season History</div>
   </header>
   <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="importData(event)">
   <div id="historyTeamTabs" class="history-team-tabs"></div>
@@ -1548,6 +1545,11 @@ function renderHistory() {
     }
     html += buildSeasonSummary(history);
     history.forEach(function(m){ html += buildHistoryCard(m); });
+    html +=
+      '<div style="display:flex;gap:10px;margin-top:18px;">' +
+        '<button onclick="exportData()" style="flex:1;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;background:#ffffff0d;border:1px solid #ffffff22;color:var(--off-white);border-radius:10px;padding:11px;cursor:pointer;">⬆ Export Backup</button>' +
+        '<button onclick="triggerImport()" style="flex:1;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;background:#ffffff0d;border:1px solid #ffffff22;color:var(--off-white);border-radius:10px;padding:11px;cursor:pointer;">⬇ Import Backup</button>' +
+      '</div>';
   }
 
   wrap.innerHTML = html;
