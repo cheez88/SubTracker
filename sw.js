@@ -1,15 +1,15 @@
 // SubTracker service worker
 // Bump VERSION whenever you upload a new version of the app.
-var VERSION = 'v1';
+var VERSION = 'v2';
 var CACHE = 'subtracker-' + VERSION;
 var APP_SHELL = [
   './',
   'index.html',
   'manifest.json',
-  'icons/icon-180.png',
-  'icons/icon-192.png',
-  'icons/icon-512.png',
-  'icons/icon-maskable-512.png'
+  'apple-touch-icon.png',
+  'icon-192.png',
+  'icon-512.png',
+  'icon-maskable-512.png'
 ];
 
 self.addEventListener('install', function (e) {
