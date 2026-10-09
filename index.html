@@ -2,8 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>⚽ Sub Tracker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Sub Tracker</title>
+<meta name="theme-color" content="#1a0a0a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SubTracker">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -15,6 +23,10 @@
   body {
     background: var(--dark); color: var(--off-white);
     font-family: 'DM Sans', sans-serif; min-height: 100vh;
+    /* Keep content clear of the iPhone notch/status bar when installed */
+    padding-top: env(safe-area-inset-top, 0px);
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none;
     background-image: radial-gradient(ellipse at 20% 0%, #cc1a1a18 0%, transparent 55%),
                       radial-gradient(ellipse at 80% 100%, #8b0f0f22 0%, transparent 55%);
   }
@@ -30,21 +42,30 @@
 
   /* ── NAV TABS ── */
   .nav-tabs {
-    display: flex; border-bottom: 1px solid #ffffff14;
-    background: #1f0c0c;
+    display: flex; border-top: 1px solid #ffffff14;
+    background: #1a0a0a;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
   .nav-tab {
-    flex: 1; padding: 10px 4px; text-align: center;
+    flex: 1; padding: 10px 4px 8px; text-align: center;
     font-family: 'DM Sans', sans-serif; font-weight: 700;
-    font-size: 0.72rem; letter-spacing: 0.5px; text-transform: uppercase;
+    font-size: 0.62rem; letter-spacing: 0.5px; text-transform: uppercase;
     color: var(--gray); background: none; border: none; cursor: pointer;
-    border-bottom: 2px solid transparent; transition: all 0.15s;
+    border-top: 2px solid transparent; transition: all 0.15s;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
   }
-  .nav-tab.active { color: var(--red-light); border-bottom-color: var(--red-light); }
+  .nav-tab .nav-icon {
+    width: 24px; height: 24px; display: block;
+    fill: none; stroke: currentColor; stroke-width: 1.6;
+    stroke-linecap: round; stroke-linejoin: round;
+    transition: transform 0.15s;
+  }
+  .nav-tab.active .nav-icon { transform: translateY(-1px); }
+  .nav-tab.active { color: var(--red-light); border-top-color: var(--red-light); }
   .nav-tab:hover:not(.active) { color: var(--off-white); }
 
   /* ── SHARED BITS ── */
-  .wrap { padding: 18px 20px 76px; }
+  .wrap { padding: 18px 20px 100px; }
   .section-head {
     font-family: 'Bebas Neue', sans-serif; font-size: 1rem;
     letter-spacing: 3px; color: var(--gray);
@@ -891,12 +912,53 @@ var state = {
 // ── NAV ──────────────────────────────────────────────────────
 function buildNav() {
   var nav = el('globalNav');
+  var ICONS = {
+    // Two people
+    teams:
+      '<svg class="nav-icon" viewBox="0 0 24 24">' +
+        '<circle cx="9" cy="8" r="3.2"/>' +
+        '<path d="M3 19.5c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/>' +
+        '<path d="M15.5 4.9a3.2 3.2 0 0 1 0 6.2"/>' +
+        '<path d="M17.5 14.3c2 .7 3.5 2.6 3.5 5.2"/>' +
+      '</svg>',
+    // Clipboard with checklist
+    setup:
+      '<svg class="nav-icon" viewBox="0 0 24 24">' +
+        '<rect x="5" y="4.5" width="14" height="16.5" rx="2"/>' +
+        '<path d="M9 4.5V3.8c0-.7.5-1.3 1.2-1.3h3.6c.7 0 1.2.6 1.2 1.3v.7"/>' +
+        '<path d="M8.5 10l1.3 1.3 2.2-2.3"/>' +
+        '<path d="M14 10.2h2"/>' +
+        '<path d="M8.5 15.5l1.3 1.3 2.2-2.3"/>' +
+        '<path d="M14 15.7h2"/>' +
+      '</svg>',
+    // Soccer ball
+    match:
+      '<svg class="nav-icon" viewBox="0 0 24 24">' +
+        '<circle cx="12" cy="12" r="9"/>' +
+        '<path d="M12 8.5l3.3 2.4-1.2 3.9H9.9l-1.2-3.9z"/>' +
+        '<path d="M12 8.5V3"/>' +
+        '<path d="M15.3 10.9l5.2-1.7"/>' +
+        '<path d="M14.1 14.8l3.2 4.4"/>' +
+        '<path d="M9.9 14.8l-3.2 4.4"/>' +
+        '<path d="M8.7 10.9L3.5 9.2"/>' +
+      '</svg>',
+    // Trophy
+    history:
+      '<svg class="nav-icon" viewBox="0 0 24 24">' +
+        '<path d="M7.5 4h9v5a4.5 4.5 0 0 1-9 0z"/>' +
+        '<path d="M7.5 6H5a2.5 2.5 0 0 0 2.6 3.4"/>' +
+        '<path d="M16.5 6H19a2.5 2.5 0 0 1-2.6 3.4"/>' +
+        '<path d="M12 13.5V17"/>' +
+        '<path d="M8.5 20.5h7"/>' +
+        '<path d="M9.5 20.5c0-1.9 1.1-3.5 2.5-3.5s2.5 1.6 2.5 3.5"/>' +
+      '</svg>'
+  };
   nav.innerHTML =
     '<div class="nav-tabs">' +
-      '<button class="nav-tab" id="navTeams"   onclick="showScreen(\'screenTeams\')"  >Teams</button>' +
-      '<button class="nav-tab" id="navSetup"   onclick="showScreen(\'screenSquad\')"  >Setup</button>' +
-      '<button class="nav-tab" id="navMatch"   onclick="showScreen(\'screenMatch\')"  >Match</button>' +
-      '<button class="nav-tab" id="navHistory" onclick="showScreen(\'screenHistory\')">History</button>' +
+      '<button class="nav-tab" id="navTeams"   onclick="showScreen(\'screenTeams\')"  >' + ICONS.teams   + 'Teams</button>' +
+      '<button class="nav-tab" id="navSetup"   onclick="showScreen(\'screenSquad\')"  >' + ICONS.setup   + 'Setup</button>' +
+      '<button class="nav-tab" id="navMatch"   onclick="showScreen(\'screenMatch\')"  >' + ICONS.match   + 'Match</button>' +
+      '<button class="nav-tab" id="navHistory" onclick="showScreen(\'screenHistory\')">' + ICONS.history + 'History</button>' +
     '</div>';
 }
 
@@ -1209,8 +1271,18 @@ function requestNotifPermission() {
   });
 }
 function sendPush(title, body) {
-  if (notifEnabled && Notification.permission === 'granted') {
-    try { new Notification(title, { body:body }); } catch(e) {}
+  if (!notifEnabled || Notification.permission !== 'granted') return;
+  // Installed iPhone apps only show notifications via the service worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistration().then(function(reg) {
+      if (reg && reg.showNotification) {
+        reg.showNotification(title, { body: body, icon: 'icons/icon-192.png', badge: 'icons/icon-192.png', tag: 'subtracker', renotify: true });
+      } else {
+        try { new Notification(title, { body: body }); } catch(e) {}
+      }
+    });
+  } else {
+    try { new Notification(title, { body: body }); } catch(e) {}
   }
 }
 
@@ -1927,6 +1999,33 @@ if (activeTeam) { applyTeam(activeTeam); }
 buildNav();
 if (activeTeam) renderSquadScreen();
 showScreen('screenTeams');
+
+// ── OFFLINE / INSTALL SUPPORT ────────────────────────────────
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js').then(function(reg) {
+      // When a new version is downloaded, offer a refresh
+      reg.addEventListener('updatefound', function() {
+        var nw = reg.installing;
+        nw && nw.addEventListener('statechange', function() {
+          if (nw.state === 'installed' && navigator.serviceWorker.controller) showUpdateBanner();
+        });
+      });
+    }).catch(function(){});
+  });
+}
+function showUpdateBanner() {
+  if (el('updateBanner')) return;
+  var b = document.createElement('div');
+  b.id = 'updateBanner';
+  b.style.cssText = 'position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:60;' +
+    'background:var(--card2);border:1px solid var(--red-light);border-radius:12px;padding:10px 12px;' +
+    'display:flex;align-items:center;gap:10px;font-size:0.8rem;box-shadow:0 4px 20px #0008';
+  b.innerHTML = '<span style="flex:1">A new version of SubTracker is ready.</span>' +
+    '<button onclick="location.reload()" style="background:var(--red-light);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-weight:700;font-size:0.72rem;text-transform:uppercase;cursor:pointer">Update</button>' +
+    '<button onclick="this.parentNode.remove()" style="background:none;border:none;color:var(--gray);font-size:1rem;cursor:pointer">✕</button>';
+  document.body.appendChild(b);
+}
 </script>
 </body>
 </html>
