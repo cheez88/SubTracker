@@ -1,6 +1,6 @@
 // SubTracker service worker
 // Bump VERSION whenever you upload a new version of the app.
-var VERSION = 'v2';
+var VERSION = 'v3';
 var CACHE = 'subtracker-' + VERSION;
 var APP_SHELL = [
   './',
