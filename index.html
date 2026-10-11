@@ -159,6 +159,15 @@
   }
   .form-group input:focus, .form-group select:focus { border-color: var(--red-light); }
   .form-group select option { background: #2a1212; }
+  /* iPhone gives date/time boxes a fixed minimum width; make them fit like the other fields */
+  .form-group { min-width: 0; }
+  .form-group input[type="date"], .form-group input[type="time"] {
+    -webkit-appearance: none; appearance: none; display: block;
+    min-width: 0; max-width: 100%; box-sizing: border-box;
+    height: 36px; line-height: 20px; color-scheme: dark; text-align: left;
+  }
+  .form-group input[type="date"]::-webkit-date-and-time-value,
+  .form-group input[type="time"]::-webkit-date-and-time-value { text-align: left; margin: 0; }
 
   .squad-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
   .squad-player {
@@ -2288,7 +2297,7 @@ showScreen('screenTeams');
 
 // ── OFFLINE / INSTALL SUPPORT ────────────────────────────────
 // Keep in step with VERSION in sw.js
-var APP_VERSION = 'v10';
+var APP_VERSION = 'v11';
 var swReg = null, updatePending = false;
 
 function matchInProgress() { return state.log.length > 0 && !state.gameOver; }
