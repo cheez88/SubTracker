@@ -12,7 +12,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --red: #cc1a1a; --red-light: #e82525; --red-dark: #8b0f0f;
@@ -220,16 +220,29 @@
   }
 
   /* Timer + half bar — sits in body above scoreboard */
-  .match-time-bar {
-    display:flex; align-items:center; justify-content:center;
-    padding:14px 20px 14px;
-    border-bottom:1px solid #ffffff0a;
+  /* ── TV BROADCAST TIMER ── */
+  .match-time-bar { padding:14px 20px 10px; }
+  .bc { width:100%; border-radius:10px; overflow:hidden; box-shadow:0 6px 18px #0009; }
+  .bc-top { display:flex; align-items:stretch; height:64px; }
+  .bc-half {
+    background:var(--red-light); display:flex; flex-direction:column; justify-content:center; align-items:center;
+    padding:0 26px 0 16px; clip-path:polygon(0 0,100% 0,86% 100%,0 100%); position:relative; z-index:1;
   }
-  .time-half-box {
-    display:flex; align-items:center; gap:24px;
-    background:var(--card); border:1px solid #ffffff1a;
-    border-radius:14px; padding:12px 28px;
-    box-shadow:0 2px 16px #00000044, inset 0 1px 0 #ffffff0a;
+  .bc-half b { font-family:'Oswald',sans-serif; font-weight:700; font-size:1.6rem; line-height:1; color:#fff; }
+  .bc-half span { font-family:'Oswald',sans-serif; font-weight:500; font-size:0.6rem; letter-spacing:2px; color:#ffd9d9; }
+  .bc-time {
+    flex:1; margin-left:-14px; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(180deg,#fdfbfb,#e6e0e0);
+    font-family:'Oswald',sans-serif; font-weight:700; font-size:2.8rem; letter-spacing:1px;
+    color:#1a0a0a; transition:color 0.3s, background 0.3s; font-variant-numeric:tabular-nums;
+  }
+  .bc-time.warning { color:#c25e00; }
+  .bc-time.over { color:#fff; background:linear-gradient(180deg,#e82525,#b51414); }
+  .bc-prog { height:8px; background:#2a1414; position:relative; }
+  .bc-prog i { position:absolute; left:0; top:0; bottom:0; width:0; background:linear-gradient(90deg,#8b0f0f,#e82525); transition:width 0.9s linear; }
+  .bc-ticks {
+    display:flex; justify-content:space-between; padding:5px 2px 0;
+    font-family:'Oswald',sans-serif; font-weight:500; font-size:0.6rem; color:var(--gray); letter-spacing:1px;
   }
   .timer-block { text-align:center; }
   .timer-label { font-size:0.55rem; text-transform:uppercase; letter-spacing:2px; color:var(--gray); margin-bottom:1px; }
@@ -241,20 +254,26 @@
   .half-number { font-family:'Bebas Neue',sans-serif; font-size:2rem; color:var(--white); line-height:1; }
 
   /* SCOREBOARD */
-  .scoreboard {
-    display:flex; align-items:center; justify-content:center; gap:16px;
-    padding:10px 20px 0;
+  /* ── SPLIT PANEL SCORE ── */
+  .scoreboard { padding:4px 20px 0; }
+  .sp { width:100%; height:150px; border-radius:14px; overflow:hidden; position:relative; box-shadow:0 8px 20px #000a; }
+  .sp-r { position:absolute; inset:0; background:linear-gradient(135deg,#2e1c1c,#140808); }
+  .sp-l { position:absolute; inset:0; background:linear-gradient(135deg,#f03030,#a51111); clip-path:polygon(0 0,58% 0,42% 100%,0 100%); }
+  .sp-line { position:absolute; inset:0; background:#fff; clip-path:polygon(57.4% 0,58.6% 0,42.6% 100%,41.4% 100%); }
+  .sp-name {
+    position:absolute; top:14px; max-width:44%; font-family:'Bebas Neue',sans-serif; letter-spacing:3px; font-size:1.05rem;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
-  .score-team {
-    display:flex; flex-direction:column; align-items:center; flex:1;
-  }
-  .score-label { font-size:0.6rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--gray); margin-bottom:2px; }
-  .score-num {
-    font-family:'Bebas Neue',sans-serif; font-size:3.2rem; line-height:1;
-    color:var(--white);
-  }
-  .score-num.our-score { color:var(--red-light); }
-  .score-sep { font-family:'Bebas Neue',sans-serif; font-size:2.2rem; color:#ffffff33; margin-top:12px; }
+  .sp-name.us { left:18px; color:#ffe0e0; }
+  .sp-name.them { right:18px; color:var(--gray); text-align:right; }
+  .sp-num { position:absolute; top:28px; font-family:'Bebas Neue',sans-serif; font-size:96px; line-height:1; color:#fff; }
+  .sp-num.us { left:18px; text-shadow:0 4px 0 #8b0f0f; }
+  .sp-num.them { right:18px; }
+  .sp-btns { position:absolute; bottom:12px; display:flex; gap:5px; }
+  .sp-btns.us { left:18px; } .sp-btns.them { right:18px; }
+  .sp-btns.us .score-btn-add { background:#fff; color:#c41818; }
+  .sp-btns.us .score-btn-undo { background:#00000022; color:#ffe0e0; border-color:#ffffff33; }
+  .score-btn:disabled { opacity:0.4; cursor:default; }
   .score-btns { display:flex; gap:6px; margin-top:6px; }
   .score-btn {
     font-family:'DM Sans',sans-serif; font-weight:700; font-size:0.7rem;
@@ -510,6 +529,27 @@
   .hcard-btn:active { transform:scale(0.97); }
   .hcard-btn-motm { background:#b8860b22; color:#ffd700; border:1px solid #ffd70033; }
   .hcard-btn-motm:hover { background:#b8860b44; }
+  .hcard-btn-edit { background:#ffffff10; color:var(--off-white); border:1px solid #ffffff1c; }
+  .hcard-btn-edit:hover { background:#ffffff1e; }
+  /* Match editor */
+  .me-score { display:flex; gap:10px; margin-bottom:14px; }
+  .me-side { flex:1; background:var(--card); border:1px solid #ffffff0f; border-radius:10px; padding:10px; text-align:center; }
+  .me-side.us { background:linear-gradient(135deg,#e8252533,#8b0f0f33); border-color:#e8252555; }
+  .me-side label { font-size:0.62rem; text-transform:uppercase; letter-spacing:1px; color:var(--gray); display:block; margin-bottom:4px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .me-num { font-family:'Bebas Neue',sans-serif; font-size:2.6rem; line-height:1; color:#fff; }
+  .me-hint { font-size:0.6rem; color:var(--gray); margin-top:4px; }
+  .me-step { display:flex; align-items:center; justify-content:center; gap:12px; }
+  .me-step button { width:32px; height:32px; border-radius:50%; border:1px solid #ffffff22; background:#ffffff10; color:#fff;
+    display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .me-step button .ic { margin:0; width:16px; height:16px; stroke-width:2.4; }
+  .me-goals { display:flex; flex-direction:column; gap:6px; margin-bottom:8px; }
+  .me-goal { display:flex; align-items:center; gap:8px; background:var(--card); border:1px solid #ffffff0a; border-radius:8px; padding:6px 8px 6px 10px; }
+  .me-goal .ic.ball { width:16px; height:16px; margin:0; }
+  .me-goal select { flex:1; background:transparent; border:none; color:var(--off-white); font-family:'DM Sans',sans-serif;
+    font-weight:700; font-size:0.88rem; outline:none; padding:4px 0; }
+  .me-goal select option { background:#2a1212; }
+  .me-empty { font-size:0.75rem; color:var(--gray); text-align:center; padding:8px 0; }
   .hcard-btn-del  { background:#cc1a1a18; color:var(--red-light); border:1px solid #cc1a1a33; }
   .hcard-btn-del:hover  { background:#cc1a1a33; }
 
@@ -708,36 +748,31 @@
     <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--gray)">Match</div>
   </div>
 
-  <!-- TIMER + HALF BAR -->
+  <!-- TIMER: TV BROADCAST -->
   <div class="match-time-bar">
-    <div class="time-half-box">
-      <div class="timer-block">
-        <div class="timer-label">Match Time</div>
-        <div class="timer-display" id="timerDisplay">20:00</div>
+    <div class="bc">
+      <div class="bc-top">
+        <div class="bc-half"><b id="halfDisplay">1ST</b><span>HALF</span></div>
+        <div class="bc-time" id="timerDisplay">20:00</div>
       </div>
-      <div style="width:1px;height:44px;background:#ffffff22;"></div>
-      <div class="half-block">
-        <div class="half-label">Half</div>
-        <div class="half-number" id="halfDisplay">1</div>
-      </div>
+      <div class="bc-prog"><i id="halfProgress"></i></div>
     </div>
+    <div class="bc-ticks" id="halfTicks"></div>
   </div>
 
-  <!-- SCOREBOARD -->
+  <!-- SCORE: SPLIT PANEL -->
   <div class="scoreboard">
-    <div class="score-team">
-      <div class="score-label" id="labelUs">Us</div>
-      <div class="score-num our-score" id="scoreUs">0</div>
-      <div class="score-btns">
+    <div class="sp">
+      <div class="sp-r"></div><div class="sp-l"></div><div class="sp-line"></div>
+      <div class="sp-name us" id="labelUs">Us</div>
+      <div class="sp-name them" id="labelThem">Them</div>
+      <div class="sp-num us" id="scoreUs">0</div>
+      <div class="sp-num them" id="scoreThem">0</div>
+      <div class="sp-btns us">
         <button class="score-btn score-btn-add" onclick="openGoalModal()">+ Goal</button>
         <button class="score-btn score-btn-undo" onclick="undoOurGoal()" id="btnUndoOur">Undo</button>
       </div>
-    </div>
-    <div class="score-sep">–</div>
-    <div class="score-team">
-      <div class="score-label" id="labelThem">Them</div>
-      <div class="score-num" id="scoreThem">0</div>
-      <div class="score-btns">
+      <div class="sp-btns them">
         <button class="score-btn score-btn-opp" onclick="addOppGoal()">+ Goal</button>
         <button class="score-btn score-btn-undo" onclick="undoOppGoal()" id="btnUndoThem">Undo</button>
       </div>
@@ -862,6 +897,54 @@
 </div>
 
 <!-- ═══════════════ TEAM EDITOR MODAL ═══════════════ -->
+<div class="team-editor" id="matchEditor">
+  <div class="team-editor-inner">
+    <h3><i data-ic="edit"></i>Edit Match</h3>
+
+    <div class="form-group" style="margin-bottom:10px">
+      <label>Opponent</label>
+      <input type="text" id="meOpponent" placeholder="e.g. Thirroul" maxlength="40" oninput="el('meThemLabel').textContent=this.value.trim()||'Opponent'">
+    </div>
+    <div class="form-row" style="margin-bottom:10px">
+      <div class="form-group"><label>Date</label><input type="date" id="meDate"></div>
+      <div class="form-group"><label>Kick-off</label><input type="time" id="meTime"></div>
+      <div class="form-group"><label>Home / Away</label>
+        <select id="meHomeAway"><option value="Home">Home</option><option value="Away">Away</option></select></div>
+    </div>
+
+    <div class="section-head" style="margin:14px 0 8px">Score</div>
+    <div class="me-score">
+      <div class="me-side us">
+        <label id="meUsLabel">Us</label>
+        <div class="me-num" id="meUs">0</div>
+        <div class="me-hint">Set by goalscorers below</div>
+      </div>
+      <div class="me-side">
+        <label id="meThemLabel">Opponent</label>
+        <div class="me-step">
+          <button onclick="meStepThem(-1)" aria-label="Remove opponent goal"><i data-ic="minus"></i></button>
+          <div class="me-num" id="meThem">0</div>
+          <button onclick="meStepThem(1)" aria-label="Add opponent goal"><i data-ic="plus"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-head" style="margin:4px 0 8px">Our Goalscorers</div>
+    <div class="me-goals" id="meGoals"></div>
+    <button class="btn-add-player" onclick="meAddGoal()"><i data-ic="plus"></i>Add Goal</button>
+
+    <div class="form-group" style="margin-bottom:16px">
+      <label>Man of the Match</label>
+      <select id="meMotm"></select>
+    </div>
+
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" style="flex:2" onclick="saveMatchEdit()"><i data-ic="save"></i>Save Changes</button>
+      <button class="btn btn-ghost" style="flex:1" onclick="closeMatchEditor()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <div class="team-editor" id="teamEditor">
   <div class="team-editor-inner">
     <h3 id="teamEditorTitle">Create Team</h3>
@@ -961,6 +1044,7 @@ var IC = {
   halftime: '<circle cx="12" cy="12" r="9"/><path class="a-red" d="M10 8.5v7M14 8.5v7"/>',
   save:     '<path d="M5 4.5h11l3 3v12H5z"/><path d="M8.5 4.5V9h6.5V4.5"/><rect x="8" y="13" width="8" height="6.5" rx=".6"/>',
   plus:     '<path d="M12 5v14M5 12h14"/>',
+  minus:    '<path d="M5 12h14"/>',
   trash:    '<path d="M4.5 7h15M9.5 7V5h5v2"/><path d="M6.5 7l1 12.5h9l1-12.5"/><path class="a-red" d="M10.3 10.5V16M13.7 10.5V16"/>',
   check:    '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
   x:        '<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',
@@ -1381,7 +1465,8 @@ function initGame() {
   el('btnSub').disabled             = (state.benchPlayers.length === 0);
   el('subAlert').classList.remove('show');
   el('halfBreakBanner').classList.remove('show');
-  el('labelUs').textContent   = 'Us';
+  var _t = getActiveTeam();
+  el('labelUs').textContent   = (_t && _t.name) ? _t.name : 'Us';
   el('labelThem').textContent = matchMeta.opponent || 'Them';
   updateScoreDisplay();
   addLog(0, 'Kick off — ' + state.fieldPlayers.join(', '), 'whistle');
@@ -1578,6 +1663,111 @@ function saveMatchToHistory() {
   showScreen('screenHistory');
 }
 
+// ── EDIT A SAVED MATCH ───────────────────────────────────────
+var meMatch = null, meGoals = [], meThem = 0;
+var ME_MONTHS = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+
+// Stored as e.g. "11 Oct 2026" / "04:55 pm"; date & time inputs need "2026-10-11" / "16:55"
+function meDateToInput(str) {
+  var p = String(str || '').trim().split(/\s+/);
+  if (p.length < 3) return '';
+  var d = parseInt(p[0], 10), mo = ME_MONTHS.indexOf(p[1].slice(0,3).toLowerCase()), y = parseInt(p[2], 10);
+  if (isNaN(d) || mo < 0 || isNaN(y)) return '';
+  return y + '-' + String(mo + 1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+}
+function meInputToDate(v) {
+  if (!v) return '';
+  var p = v.split('-');
+  return new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString('en-AU', {day:'numeric',month:'short',year:'numeric'});
+}
+function meTimeToInput(str) {
+  var m = String(str || '').match(/(\d{1,2}):(\d{2})\s*([ap])?/i);
+  if (!m) return '';
+  var h = parseInt(m[1], 10);
+  if (m[3]) { var pm = m[3].toLowerCase() === 'p'; if (pm && h < 12) h += 12; if (!pm && h === 12) h = 0; }
+  return String(h).padStart(2,'0') + ':' + m[2];
+}
+function meInputToTime(v) {
+  if (!v) return '';
+  var p = v.split(':'), d = new Date(); d.setHours(+p[0], +p[1], 0, 0);
+  return d.toLocaleTimeString('en-AU', {hour:'2-digit',minute:'2-digit'});
+}
+
+// Everyone who could have scored: this match's squad, plus the team's current players
+function meCandidates() {
+  var list = [];
+  var add = function(n){ if (n && n !== 'Unknown' && list.indexOf(n) === -1) list.push(n); };
+  (meMatch.squad || []).forEach(add);
+  var teams = loadTeams();
+  for (var i = 0; i < teams.length; i++) if (teams[i].id === meMatch.teamId) teams[i].players.forEach(add);
+  meGoals.forEach(function(g){ add(g.name); });
+  if (meMatch.motm) add(meMatch.motm);
+  return list;
+}
+
+function openMatchEditor(id) {
+  var history = loadHistory();
+  meMatch = null;
+  for (var i = 0; i < history.length; i++) if (history[i].id === id) { meMatch = history[i]; break; }
+  if (!meMatch) return;
+  meGoals = (meMatch.scorers || []).map(function(s){ return { name: s.name || 'Unknown', time: s.time }; });
+  meThem = meMatch.scoreThem || 0;
+  el('meOpponent').value  = meMatch.opponent || '';
+  el('meDate').value      = meDateToInput(meMatch.date);
+  el('meTime').value      = meTimeToInput(meMatch.time);
+  el('meHomeAway').value  = meMatch.homeAway === 'Away' ? 'Away' : 'Home';
+  el('meUsLabel').textContent = meMatch.teamName || 'Us';
+  renderMatchEditor();
+  var motm = el('meMotm');
+  motm.innerHTML = '<option value="">None</option>' + meCandidates().map(function(n){
+    return '<option value="' + esc(n) + '"' + (meMatch.motm === n ? ' selected' : '') + '>' + esc(n) + '</option>';
+  }).join('');
+  el('matchEditor').classList.add('show');
+  el('matchEditor').scrollTop = 0;
+}
+
+function renderMatchEditor() {
+  el('meUs').textContent   = meGoals.length;
+  el('meThem').textContent = meThem;
+  el('meThemLabel').textContent = el('meOpponent').value.trim() || 'Opponent';
+  var names = meCandidates().concat(['Unknown']);
+  el('meGoals').innerHTML = meGoals.length ? meGoals.map(function(g, i) {
+    return '<div class="me-goal">' + icon('ball', 'ball') +
+      '<select onchange="meGoals[' + i + '].name=this.value">' +
+        names.map(function(n){ return '<option value="' + esc(n) + '"' + (g.name === n ? ' selected' : '') + '>' + esc(n) + '</option>'; }).join('') +
+      '</select>' +
+      '<button class="btn-remove-player" onclick="meRemoveGoal(' + i + ')" title="Remove goal">' + icon('x','solo') + '</button>' +
+    '</div>';
+  }).join('') : '<div class="me-empty">No goals for us in this match</div>';
+}
+function meAddGoal()        { meGoals.push({ name: 'Unknown', time: null }); renderMatchEditor(); }
+function meRemoveGoal(i)    { meGoals.splice(i, 1); renderMatchEditor(); }
+function meStepThem(d)      { meThem = Math.max(0, meThem + d); renderMatchEditor(); }
+function closeMatchEditor() { el('matchEditor').classList.remove('show'); meMatch = null; }
+
+function saveMatchEdit() {
+  if (!meMatch) return;
+  var history = loadHistory();
+  for (var i = 0; i < history.length; i++) {
+    if (history[i].id !== meMatch.id) continue;
+    var m = history[i];
+    m.opponent  = el('meOpponent').value.trim() || 'Unknown';
+    m.date      = meInputToDate(el('meDate').value) || m.date;
+    m.time      = meInputToTime(el('meTime').value) || m.time;
+    m.homeAway  = el('meHomeAway').value;
+    m.scorers   = meGoals.map(function(g){ return { name: g.name, time: g.time }; });
+    m.scoreUs   = m.scorers.length;
+    m.scoreThem = meThem;
+    m.result    = m.scoreUs > m.scoreThem ? 'win' : m.scoreUs < m.scoreThem ? 'loss' : 'draw';
+    var motm = el('meMotm').value;
+    if (motm) m.motm = motm; else delete m.motm;
+    break;
+  }
+  saveHistory(history);
+  closeMatchEditor();
+  renderHistory();
+}
+
 function deleteMatch(id) {
   if (!confirm('Delete this match record?')) return;
   var history = loadHistory().filter(function(m){ return m.id !== id; });
@@ -1664,7 +1854,7 @@ function renderHistory() {
       '<div class="history-empty">' +
         '<div class="big-icon">' + icon('clipboard') + '</div>' +
         '<p>No matches saved yet.<br>Complete a match and save it to see history here.</p>' +
-      '</div>';
+      '</div>' + backupButtons();
     return;
   }
 
@@ -1690,14 +1880,19 @@ function renderHistory() {
     }
     html += buildSeasonSummary(history);
     history.forEach(function(m){ html += buildHistoryCard(m); });
-    html +=
-      '<div style="display:flex;gap:10px;margin-top:18px;">' +
-        '<button onclick="exportData()" style="flex:1;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;background:#ffffff0d;border:1px solid #ffffff22;color:var(--off-white);border-radius:10px;padding:11px;cursor:pointer;">' + icon('exportIc') + 'Export Backup</button>' +
-        '<button onclick="triggerImport()" style="flex:1;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;background:#ffffff0d;border:1px solid #ffffff22;color:var(--off-white);border-radius:10px;padding:11px;cursor:pointer;">' + icon('importIc') + 'Import Backup</button>' +
-      '</div>';
   }
 
-  wrap.innerHTML = html;
+  wrap.innerHTML = html + backupButtons();
+}
+
+// Export / Import buttons — always shown at the bottom of History
+function backupButtons() {
+  var st = 'flex:1;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;background:#ffffff0d;border:1px solid #ffffff22;color:var(--off-white);border-radius:10px;padding:11px;cursor:pointer;';
+  return '<div style="display:flex;gap:10px;margin-top:18px;">' +
+      '<button onclick="exportData()" style="' + st + '">' + icon('exportIc') + 'Export Backup</button>' +
+      '<button onclick="triggerImport()" style="' + st + '">' + icon('importIc') + 'Import Backup</button>' +
+    '</div>' +
+    '<p style="text-align:center;font-size:0.7rem;color:var(--gray);margin-top:8px">Backups include your teams and all saved matches.</p>';
 }
 
 function setHistoryFilter(val) {
@@ -1802,7 +1997,7 @@ function buildHistoryCard(m) {
     ? scorerNames.map(function(n){ return '<span class="scorer-chip">' + icon('ball') + esc(n) + '</span>'; }).join('')
     : '<span style="font-size:0.68rem;color:var(--gray)">No scorers recorded</span>';
   var motmChip = m.motm ? '<span class="motm-chip">' + icon('star') + esc(m.motm) + '</span>' : '';
-  var motmLabel = icon('star') + (m.motm ? 'Change MOTM' : 'Man of Match');
+  var motmLabel = icon('star') + 'MOTM';
 
   return '<div class="history-card ' + m.result + '">' +
     '<div class="hcard-top">' +
@@ -1817,8 +2012,9 @@ function buildHistoryCard(m) {
     '</div>' +
     '<div class="hcard-scorers">' + scorerChips + (motmChip ? ' ' + motmChip : '') + '</div>' +
     '<div class="hcard-actions">' +
+      '<button class="hcard-btn hcard-btn-edit" onclick="openMatchEditor(' + m.id + ')">' + icon('edit') + 'Edit</button>' +
       '<button class="hcard-btn hcard-btn-motm" onclick="openMotmModal(' + m.id + ')">' + motmLabel + '</button>' +
-      '<button class="hcard-btn hcard-btn-del"  onclick="deleteMatch(' + m.id + ')">' + icon('trash') + 'Delete Match</button>' +
+      '<button class="hcard-btn hcard-btn-del"  onclick="deleteMatch(' + m.id + ')">' + icon('trash') + 'Delete</button>' +
     '</div>' +
   '</div>';
 }
@@ -2016,15 +2212,29 @@ function fmt(secs){
   return m+':'+s;
 }
 
+// Progress-bar markers: kick off, quarter points of the half, half/full time
+var _ticksKey = '';
+function renderHalfTicks() {
+  var key = HALF_SECS + '|' + state.half;
+  if (key === _ticksKey) return;
+  _ticksKey = key;
+  var mins = HALF_SECS / 60, labels = [state.half === 2 ? '2ND HALF' : 'KICK OFF'];
+  for (var q = 1; q <= 3; q++) labels.push(Math.round(mins * q / 4) + "'");
+  labels.push(state.half === 2 ? 'FULL TIME' : 'HALF TIME');
+  el('halfTicks').innerHTML = labels.map(function(l){ return '<span>' + l + '</span>'; }).join('');
+}
+
 // ── RENDER ───────────────────────────────────────────────────
 function render() {
   var td = el('timerDisplay');
   var remaining = Math.max(0, HALF_SECS - state.elapsed);
   td.textContent = fmt(remaining);
-  td.className = 'timer-display';
+  td.className = 'bc-time';
   if (remaining <= 120 && remaining > 0) td.classList.add('warning');
   if (remaining === 0) td.classList.add('over');
-  el('halfDisplay').textContent = state.half;
+  el('halfDisplay').textContent = state.half === 2 ? '2ND' : '1ST';
+  el('halfProgress').style.width = Math.min(100, (state.elapsed / HALF_SECS) * 100) + '%';
+  renderHalfTicks();
   var fairShare = (HALF_SECS*2)/activePlayers.length;
   var sub = getNextSub();
 
