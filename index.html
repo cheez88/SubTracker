@@ -37,9 +37,11 @@
   }
   .logo { font-family:'Bebas Neue',sans-serif; font-size:1.9rem; letter-spacing:2px; color:var(--red-light); line-height:1; }
   .logo span { color: var(--white); }
+  .logo { white-space:nowrap; flex-shrink:0; }
+  header > div:last-child, .match-header > div:last-child { white-space:nowrap; text-align:right; margin-left:10px; }
   .logo-mark {
-    display:inline-block; width:34px; height:34px; vertical-align:-6px; margin-right:9px;
-    border-radius:9px; border:1px solid #ffffff1f; box-shadow: 0 2px 8px #0006;
+    display:inline-block; width:30px; height:30px; vertical-align:-4px; margin-right:9px;
+    filter: drop-shadow(0 2px 4px #0008);
   }
   .screen { display: none; }
   .screen.active { display: block; }
@@ -67,6 +69,36 @@
   .nav-tab.active .nav-icon { transform: translateY(-1px); }
   .nav-tab.active { color: var(--red-light); border-top-color: var(--red-light); }
   .nav-tab:hover:not(.active) { color: var(--off-white); }
+
+
+  /* ── CUSTOM ICONS ── */
+  .ic {
+    width:1.2em; height:1.2em; vertical-align:-0.24em; margin-right:0.42em;
+    fill:none; stroke:currentColor; stroke-width:1.8;
+    stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; overflow:visible;
+  }
+  .ic.solo { margin-right:0; }
+  .ic .fc   { fill:currentColor; fill-opacity:0.22; }
+  .ic .a-red   { stroke:#ff4545; }   .ic .f-red   { fill:#e82525; fill-opacity:0.28; }
+  .ic .a-green { stroke:#4cca6e; }   .ic .f-green { fill:#4cca6e; fill-opacity:0.25; }
+  .ic .a-gold  { stroke:#ffd700; }   .ic .f-gold  { fill:#ffd700; fill-opacity:0.25; }
+  .ic .a-amber { stroke:#ff9a1f; }
+  .ic .s-red   { fill:#e82525; stroke:none; }
+  /* On coloured buttons, icons go single-colour so they stay visible */
+  .ic.mono .a-red, .ic.mono .a-green, .ic.mono .a-gold, .ic.mono .a-amber,
+  .btn-primary .ic .a-red, .btn-kickoff .ic .a-red, .btn-confirm-sub .ic .a-red,
+  .btn-confirm-sub .ic .a-green, .team-btn-use .ic .a-red, .pbadge .ic * { stroke:currentColor; }
+  .ic.mono .f-red, .ic.mono .f-green, .ic.mono .f-gold,
+  .btn-primary .ic .f-red, .btn-kickoff .ic .f-red, .pbadge .ic .f-red { fill:currentColor; fill-opacity:0.25; }
+  .ic.mono .s-red, .btn-primary .ic .s-red { fill:currentColor; fill-opacity:0.6; }
+  .ic.muted { color:var(--gray); }
+  .big-icon .ic { width:46px; height:46px; margin:0; stroke-width:1.4; color:#ffffff55; }
+  .sub-alert-icon .ic { width:28px; height:28px; margin:0; stroke-width:2; }
+  .log-item .ic { width:15px; height:15px; margin:0; }
+  .squad-check .ic, .step-num .ic { width:12px; height:12px; margin:0; stroke-width:3; }
+  .btn-remove-player .ic { width:14px; height:14px; margin:0; }
+  .pbadge .ic { width:10px; height:10px; margin-right:3px; vertical-align:-1px; stroke-width:2.6; }
+  .modal h3 .ic, .team-editor-inner h3 .ic, .half-break-title .ic { width:0.95em; height:0.95em; vertical-align:-0.1em; stroke-width:2; }
 
   /* ── SHARED BITS ── */
   .wrap { padding: 18px 20px 100px; }
@@ -630,7 +662,7 @@
 <!-- ═══════════════ SCREEN: SETUP ═══════════════ -->
 <div id="screenSquad" class="screen active">
   <header>
-    <div class="logo"><img class="logo-mark" src="icon-192.png" alt="">Sub<span>Tracker</span></div>
+    <div class="logo"><img class="logo-mark" src="logo-ball.png" alt="">Sub<span>Tracker</span></div>
     <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--gray)">New Match</div>
   </header>
   <div class="wrap">
@@ -649,8 +681,8 @@
         <div class="form-group" style="max-width:110px">
           <label>Home / Away</label>
           <select id="inputHomeAway">
-            <option value="Home">🏠 Home</option>
-            <option value="Away">✈️ Away</option>
+            <option value="Home">Home</option>
+            <option value="Away">Away</option>
           </select>
         </div>
       </div>
@@ -659,7 +691,7 @@
     <div class="section-head" style="margin-bottom:10px">Today's Squad</div>
     <div class="squad-grid" id="squadGrid"></div>
     <div class="squad-summary" id="squadSummary"></div>
-    <button class="btn-kickoff" id="btnKickoff" onclick="startMatch()">⚽ Kick Off</button>
+    <button class="btn-kickoff" id="btnKickoff" onclick="startMatch()"><i data-ic="whistle"></i>Kick Off</button>
   </div>
 </div>
 
@@ -667,12 +699,12 @@
 <div id="screenMatch" class="screen">
 
   <div class="notif-bar" id="notifBar">
-    🔔 Enable push notifications for sub alerts
+    <i data-ic="bell"></i>Enable push notifications for sub alerts
     <button onclick="requestNotifPermission()">Enable</button>
   </div>
 
   <div class="match-header">
-    <div class="logo"><img class="logo-mark" src="icon-192.png" alt="">Sub<span>Tracker</span></div>
+    <div class="logo"><img class="logo-mark" src="logo-ball.png" alt="">Sub<span>Tracker</span></div>
     <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--gray)">Match</div>
   </div>
 
@@ -713,15 +745,15 @@
   </div>
 
   <div class="controls" style="margin-top:10px">
-    <button class="btn btn-primary" id="btnStartPause" onclick="toggleTimer()">▶ Start</button>
+    <button class="btn btn-primary" id="btnStartPause" onclick="toggleTimer()"><i data-ic="play"></i>Start</button>
     <button class="btn btn-ghost"   id="btnHalf"       onclick="doHalfTime()">Half Time</button>
-    <button class="btn btn-sub"     id="btnSub"        onclick="openSubModal()">↔ Sub</button>
-    <button class="btn btn-muted"                      onclick="goToSquad()">✏ Squad</button>
-    <button class="btn btn-reset"                      onclick="confirmReset()">↺ Reset</button>
+    <button class="btn btn-sub"     id="btnSub"        onclick="openSubModal()"><i data-ic="sub"></i>Sub</button>
+    <button class="btn btn-muted"                      onclick="goToSquad()"><i data-ic="clipboard"></i>Squad</button>
+    <button class="btn btn-reset"                      onclick="confirmReset()"><i data-ic="reset"></i>Reset</button>
   </div>
 
   <div class="sub-alert" id="subAlert">
-    <div class="sub-alert-icon">🔄</div>
+    <div class="sub-alert-icon"><i data-ic="sub"></i></div>
     <div class="sub-alert-text">
       <div class="sub-alert-title"  id="subAlertTitle">Sub Recommended</div>
       <div class="sub-alert-detail" id="subAlertDetail"></div>
@@ -730,7 +762,7 @@
   </div>
 
   <div class="half-break" id="halfBreakBanner">
-    <div class="half-break-title">⏸ Half Time</div>
+    <div class="half-break-title"><i data-ic="halftime"></i>Half Time</div>
     <div class="half-break-sub">Press "Start 2nd Half" when ready</div>
   </div>
 
@@ -755,7 +787,7 @@
 <!-- ═══════════════ SCREEN: HISTORY ═══════════════ -->
 <div id="screenHistory" class="screen">
   <header>
-    <div class="logo"><img class="logo-mark" src="icon-192.png" alt="">Sub<span>Tracker</span></div>
+    <div class="logo"><img class="logo-mark" src="logo-ball.png" alt="">Sub<span>Tracker</span></div>
     <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--gray)">Season History</div>
   </header>
   <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="importData(event)">
@@ -770,7 +802,7 @@
 <!-- ═══════════════ GOAL SCORER MODAL ═══════════════ -->
 <div class="modal-overlay" id="goalModal">
   <div class="modal">
-    <h3>⚽ Who Scored?</h3>
+    <h3><i data-ic="ball"></i>Who Scored?</h3>
     <div class="goal-player-grid" id="goalPlayerGrid"></div>
     <button class="modal-cancel" onclick="closeGoalModal()">Cancel</button>
   </div>
@@ -779,7 +811,7 @@
 <!-- ═══════════════ SUB PICKER MODAL ═══════════════ -->
 <div class="modal-overlay" id="subModal">
   <div class="modal" style="max-width:360px">
-    <h3>↔ Make Substitution</h3>
+    <h3><i data-ic="sub"></i>Make Substitution</h3>
     <div class="sub-step-label">
       <span class="step-num" id="stepNum1">1</span> Who comes <strong style="color:var(--red-light)">OFF</strong>?
     </div>
@@ -789,7 +821,7 @@
       <span class="step-num" id="stepNum2">2</span> Who comes <strong style="color:#4cca6e">ON</strong>?
     </div>
     <div class="sub-player-list" id="subOnList"></div>
-    <button class="btn-confirm-sub" id="btnConfirmSub" onclick="confirmSub()" disabled>↔ Confirm Sub</button>
+    <button class="btn-confirm-sub" id="btnConfirmSub" onclick="confirmSub()" disabled><i data-ic="sub"></i>Confirm Sub</button>
     <button class="modal-cancel" onclick="closeSubModal()">Cancel</button>
   </div>
 </div>
@@ -797,7 +829,7 @@
 <!-- ═══════════════ MOTM MODAL ═══════════════ -->
 <div class="modal-overlay" id="motmModal">
   <div class="modal" style="max-width:340px">
-    <h3>⭐ Man of the Match</h3>
+    <h3><i data-ic="star"></i>Man of the Match</h3>
     <p style="text-align:center;font-size:0.78rem;color:var(--gray);margin-bottom:14px">Who was the standout player?</p>
     <div class="goal-player-grid" id="motmPlayerGrid"></div>
     <button class="modal-cancel" onclick="closeMotmModal()">Cancel</button>
@@ -807,11 +839,11 @@
 <!-- ═══════════════ END GAME SAVE MODAL ═══════════════ -->
 <div class="endgame-modal" id="endgameModal">
   <div class="endgame-inner">
-    <h3>🏁 Full Time!</h3>
+    <h3><i data-ic="flag"></i>Full Time!</h3>
     <div class="endgame-final-score" id="endgameFinalScore">0 – 0</div>
     <p style="text-align:center;font-size:0.78rem;color:var(--gray);margin-bottom:16px">Save this match to history?</p>
     <div style="display:flex;gap:8px">
-      <button class="btn btn-primary" style="flex:1" onclick="saveMatchToHistory()">💾 Save</button>
+      <button class="btn btn-primary" style="flex:1" onclick="saveMatchToHistory()"><i data-ic="save"></i>Save</button>
       <button class="btn btn-muted" style="flex:1" onclick="closeEndgameModal()">Discard</button>
     </div>
   </div>
@@ -820,11 +852,11 @@
 <!-- ═══════════════ SCREEN: TEAMS ═══════════════ -->
 <div id="screenTeams" class="screen">
   <header>
-    <div class="logo"><img class="logo-mark" src="icon-192.png" alt="">Sub<span>Tracker</span></div>
+    <div class="logo"><img class="logo-mark" src="logo-ball.png" alt="">Sub<span>Tracker</span></div>
     <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--gray)">My Teams</div>
   </header>
   <div class="wrap">
-    <button class="btn-add-team" onclick="openTeamEditor(null)">＋ Create New Team</button>
+    <button class="btn-add-team" onclick="openTeamEditor(null)"><i data-ic="plus"></i>Create New Team</button>
     <div id="teamsListWrap"></div>
   </div>
 </div>
@@ -870,10 +902,10 @@
 
     <div class="section-head" style="margin-bottom:8px">Players <span class="badge" id="editorPlayerCount">0</span></div>
     <div class="players-edit-list" id="editorPlayerList"></div>
-    <button class="btn-add-player" onclick="addEditorPlayer()">＋ Add Player</button>
+    <button class="btn-add-player" onclick="addEditorPlayer()"><i data-ic="plus"></i>Add Player</button>
 
     <div style="display:flex;gap:8px;margin-top:4px">
-      <button class="btn btn-primary" style="flex:2" onclick="saveTeam()">💾 Save Team</button>
+      <button class="btn btn-primary" style="flex:2" onclick="saveTeam()"><i data-ic="save"></i>Save Team</button>
       <button class="btn btn-muted"   style="flex:1" onclick="closeTeamEditor()">Cancel</button>
     </div>
   </div>
@@ -912,6 +944,43 @@ var state = {
   fieldPlayers:[], benchPlayers:[],
   fieldStart:{}, fieldTime:{}, log:[]
 };
+
+// ── ICONS ────────────────────────────────────────────────────
+// Custom line icons, same style as the nav bar. a-*/f-* classes add team colours.
+var IC = {
+  ball:     '<circle cx="12" cy="12" r="9"/><path class="a-red f-red" d="M12 8.5l3.3 2.4-1.2 3.9H9.9l-1.2-3.9z"/><path d="M12 8.5V3M15.3 10.9l5.2-1.7M14.1 14.8l3.2 4.4M9.9 14.8l-3.2 4.4M8.7 10.9L3.5 9.2"/>',
+  play:     '<path class="fc" d="M8 5.9v12.2a.9.9 0 0 0 1.4.8l9.3-6.1a.9.9 0 0 0 0-1.6L9.4 5.1A.9.9 0 0 0 8 5.9z"/>',
+  pause:    '<path d="M9 6v12M15 6v12" style="stroke-width:2.6"/>',
+  sub:      '<path class="a-green" d="M8 19.5V5M4.5 8.5L8 5l3.5 3.5"/><path class="a-red" d="M16 4.5V19M12.5 15.5L16 19l3.5-3.5"/>',
+  edit:     '<path d="M4.5 19.5h4l10.2-10.2a2 2 0 0 0 0-2.8l-1.2-1.2a2 2 0 0 0-2.8 0L4.5 15.5z"/><path d="M13.5 6.5l4 4"/>',
+  reset:    '<path d="M4.8 12a7.2 7.2 0 1 0 2.1-5.1"/><path d="M4.8 4.6v4h4"/>',
+  undo:     '<path d="M9 13.5L4.5 9 9 4.5"/><path d="M4.5 9h10a5 5 0 0 1 0 10H11"/>',
+  bell:     '<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path class="a-amber" d="M10 20.5a2 2 0 0 0 4 0"/>',
+  whistle:  '<circle cx="9" cy="14" r="5.2"/><path d="M12.7 10.4h7.8v4h-6.3"/><path d="M6.3 7.6L4.2 5.2"/><circle class="a-red f-red" cx="9" cy="14" r="1.6"/>',
+  flag:     '<path class="s-red" d="M5.5 4.5h4.3v4.2H5.5zM14.1 4.5h4.4v4.2h-4.4zM9.8 8.7h4.3V13H9.8z"/><path d="M5.5 21V3.5"/><path d="M5.5 4.5h13V13h-13"/>',
+  halftime: '<circle cx="12" cy="12" r="9"/><path class="a-red" d="M10 8.5v7M14 8.5v7"/>',
+  save:     '<path d="M5 4.5h11l3 3v12H5z"/><path d="M8.5 4.5V9h6.5V4.5"/><rect x="8" y="13" width="8" height="6.5" rx=".6"/>',
+  plus:     '<path d="M12 5v14M5 12h14"/>',
+  trash:    '<path d="M4.5 7h15M9.5 7V5h5v2"/><path d="M6.5 7l1 12.5h9l1-12.5"/><path class="a-red" d="M10.3 10.5V16M13.7 10.5V16"/>',
+  check:    '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  x:        '<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',
+  star:     '<path class="a-gold f-gold" d="M12 3.8l2.5 5.2 5.6.7-4.1 3.9 1 5.6L12 16.5l-5 2.7 1-5.6-4.1-3.9 5.6-.7z"/>',
+  users:    '<circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M15.5 4.9a3.2 3.2 0 0 1 0 6.2"/><path d="M17.5 14.3c2 .7 3.5 2.6 3.5 5.2"/>',
+  clipboard:'<rect x="5" y="4.5" width="14" height="16.5" rx="2"/><path d="M9 4.5v-.7c0-.7.5-1.3 1.2-1.3h3.6c.7 0 1.2.6 1.2 1.3v.7"/><path d="M8.5 10l1.3 1.3 2.2-2.3M14 10.2h2M8.5 15.5l1.3 1.3 2.2-2.3M14 15.7h2"/>',
+  exportIc: '<path d="M4.5 15v4.5h15V15"/><path class="a-red" d="M12 15V4.5M7.5 9L12 4.5 16.5 9"/>',
+  importIc: '<path d="M4.5 15v4.5h15V15"/><path class="a-green" d="M12 4.5V15M7.5 10.5L12 15l4.5-4.5"/>',
+  arrowUp:  '<path d="M12 19V5M6.5 10.5L12 5l5.5 5.5"/>',
+  arrowDown:'<path d="M12 5v14M6.5 13.5L12 19l5.5-5.5"/>'
+};
+function icon(name, cls) {
+  return '<svg class="ic' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" aria-hidden="true">' + (IC[name] || '') + '</svg>';
+}
+// Swap <i data-ic="name"></i> placeholders in the static HTML for real icons
+function hydrateIcons(root) {
+  (root || document).querySelectorAll('i[data-ic]').forEach(function(n) {
+    n.outerHTML = icon(n.getAttribute('data-ic'), n.getAttribute('data-cls'));
+  });
+}
 
 // ── NAV ──────────────────────────────────────────────────────
 function buildNav() {
@@ -1028,7 +1097,7 @@ function renderTeams() {
   if (!teams.length) {
     wrap.innerHTML =
       '<div class="teams-empty">' +
-        '<div class="big-icon">👥</div>' +
+        '<div class="big-icon">' + icon('users') + '</div>' +
         '<p style="margin-bottom:6px"><strong style="color:var(--off-white)">Welcome to SubTracker!</strong></p>' +
         '<p>Create your first team above to get started.<br>You can add multiple teams — great for families with kids in different squads.</p>' +
       '</div>';
@@ -1057,9 +1126,9 @@ function renderTeams() {
         '</div>' +
         '<div class="team-players-row">' + (pipHTML || '<span style="font-size:0.7rem;color:var(--gray)">No players added</span>') + '</div>' +
         '<div class="team-actions">' +
-          (!isActive ? '<button class="team-btn team-btn-use" onclick="useTeam(\'' + t.id + '\')">✓ Use This Team</button>' : '<button class="team-btn team-btn-use" disabled style="opacity:0.4;cursor:default">✓ Active</button>') +
-          '<button class="team-btn team-btn-edit" onclick="openTeamEditor(\'' + t.id + '\')">✏ Edit</button>' +
-          '<button class="team-btn team-btn-del"  onclick="deleteTeam(\'' + t.id + '\')">🗑 Delete</button>' +
+          (!isActive ? '<button class="team-btn team-btn-use" onclick="useTeam(\'' + t.id + '\')">' + icon('check') + 'Use This Team</button>' : '<button class="team-btn team-btn-use" disabled style="opacity:0.4;cursor:default">' + icon('check') + 'Active</button>') +
+          '<button class="team-btn team-btn-edit" onclick="openTeamEditor(\'' + t.id + '\')">' + icon('edit') + 'Edit</button>' +
+          '<button class="team-btn team-btn-del"  onclick="deleteTeam(\'' + t.id + '\')">' + icon('trash') + 'Delete</button>' +
         '</div>' +
       '</div>';
   });
@@ -1130,7 +1199,7 @@ function renderEditorPlayers() {
       '<span class="player-num">' + (i + 1) + '</span>' +
       '<input type="text" placeholder="Player ' + (i+1) + '" value="' + esc(name) + '" ' +
         'oninput="editorPlayers[' + i + ']=this.value;updateEditorCount()" maxlength="30">' +
-      '<button class="btn-remove-player" onclick="removeEditorPlayer(' + i + ')" title="Remove">✕</button>';
+      '<button class="btn-remove-player" onclick="removeEditorPlayer(' + i + ')" title="Remove">' + icon('x','solo') + '</button>';
     list.appendChild(row);
   });
   updateEditorCount();
@@ -1218,7 +1287,7 @@ function renderSquadScreen() {
     div.innerHTML =
       '<div class="squad-avatar">' + p[0] + '</div>' +
       '<span class="squad-pname">' + p + '</span>' +
-      '<div class="squad-check">' + (present ? '✓' : '') + '</div>';
+      '<div class="squad-check">' + (present ? icon('check','solo') : '') + '</div>';
     div.onclick = function() { availability[p] = !availability[p]; renderSquadScreen(); };
     grid.appendChild(div);
   });
@@ -1303,7 +1372,7 @@ function initGame() {
   state.benchPlayers = activePlayers.slice(FIELD_SIZE);
   state.fieldPlayers.forEach(function(p){ state.fieldStart[p]=0; });
 
-  el('btnStartPause').textContent   = '▶ Start';
+  el('btnStartPause').innerHTML   = icon('play') + 'Start';
   el('btnStartPause').disabled      = false;
   el('btnStartPause').className     = 'btn btn-primary';
   el('btnStartPause').style.display = '';
@@ -1315,7 +1384,7 @@ function initGame() {
   el('labelUs').textContent   = 'Us';
   el('labelThem').textContent = matchMeta.opponent || 'Them';
   updateScoreDisplay();
-  addLog(0, '🟢 Kick off — ' + state.fieldPlayers.join(', '));
+  addLog(0, 'Kick off — ' + state.fieldPlayers.join(', '), 'whistle');
   render();
 }
 
@@ -1362,7 +1431,7 @@ function recordGoal(player) {
   score.us++;
   scorers.push({ name: player || 'Unknown', time: state.totalElapsed });
   updateScoreDisplay();
-  addLog(state.totalElapsed, '⚽ GOAL! ' + (player || 'Unknown scorer'));
+  addLog(state.totalElapsed, '<strong style="color:var(--off-white)">GOAL!</strong> ' + esc(player || 'Unknown scorer'), 'ball');
   closeGoalModal();
   render();
 }
@@ -1372,7 +1441,7 @@ function undoOurGoal() {
   score.us--;
   scorers.pop();
   updateScoreDisplay();
-  addLog(state.totalElapsed, '↩ Goal removed');
+  addLog(state.totalElapsed, 'Goal removed', 'undo');
   render();
 }
 
@@ -1380,7 +1449,7 @@ function addOppGoal() {
   if (state.gameOver) return;
   score.them++;
   updateScoreDisplay();
-  addLog(state.totalElapsed, '🔴 Opponent scored');
+  addLog(state.totalElapsed, 'Opponent scored', 'ball', 'mono muted');
   render();
 }
 
@@ -1399,13 +1468,13 @@ function toggleTimer() {
 function startTimer() {
   state.running = true;
   timerInterval = setInterval(tick, 1000);
-  el('btnStartPause').textContent = '⏸ Pause';
+  el('btnStartPause').innerHTML = icon('pause') + 'Pause';
   el('btnStartPause').className   = 'btn btn-ghost';
 }
 function pauseTimer() {
   state.running = false;
   clearInterval(timerInterval);
-  el('btnStartPause').textContent = '▶ Resume';
+  el('btnStartPause').innerHTML = icon('play') + 'Resume';
   el('btnStartPause').className   = 'btn btn-primary';
 }
 function tick() {
@@ -1424,9 +1493,9 @@ function tick() {
       accumulateFieldTime();
       el('halfBreakBanner').classList.add('show');
       el('subAlert').classList.remove('show');
-      el('btnHalf').textContent         = '▶ Start 2nd Half';
+      el('btnHalf').innerHTML         = icon('play') + 'Start 2nd Half';
       el('btnStartPause').style.display = 'none';
-      addLog(state.totalElapsed, '⏸ Half Time — ' + score.us + '–' + score.them);
+      addLog(state.totalElapsed, 'Half Time — ' + score.us + '–' + score.them, 'halftime');
       render();
     }
   }
@@ -1439,11 +1508,11 @@ function doHalfTime() {
     state.fieldPlayers.forEach(function(p){ state.fieldStart[p]=state.totalElapsed; });
     el('btnHalf').textContent           = 'Full Time';
     el('halfBreakBanner').classList.remove('show');
-    el('btnStartPause').textContent     = '▶ Start 2nd Half';
+    el('btnStartPause').innerHTML     = icon('play') + 'Start 2nd Half';
     el('btnStartPause').className       = 'btn btn-primary';
     el('btnStartPause').style.display   = '';
     state.running = false;
-    addLog(state.totalElapsed, '🔵 2nd Half');
+    addLog(state.totalElapsed, '2nd Half', 'play');
     render();
   } else {
     pauseTimer();
@@ -1451,9 +1520,9 @@ function doHalfTime() {
     accumulateFieldTime();
     el('halfBreakBanner').classList.add('show');
     el('subAlert').classList.remove('show');
-    el('btnHalf').textContent         = '▶ Start 2nd Half';
+    el('btnHalf').innerHTML         = icon('play') + 'Start 2nd Half';
     el('btnStartPause').style.display = 'none';
-    addLog(state.totalElapsed, '⏸ Half Time — ' + score.us + '–' + score.them);
+    addLog(state.totalElapsed, 'Half Time — ' + score.us + '–' + score.them, 'halftime');
     render();
   }
 }
@@ -1462,12 +1531,12 @@ function endGame() {
   pauseTimer();
   state.gameOver = true;
   accumulateFieldTime();
-  el('btnStartPause').textContent = '🏁 Full Time';
+  el('btnStartPause').innerHTML = icon('flag') + 'Full Time';
   el('btnStartPause').disabled    = true;
   el('btnHalf').style.display     = 'none';
   el('btnSub').disabled           = true;
   el('subAlert').classList.remove('show');
-  addLog(state.totalElapsed, '🏁 Full Time — ' + score.us + '–' + score.them);
+  addLog(state.totalElapsed, 'Full Time — ' + score.us + '–' + score.them, 'flag');
   render();
   // Show save modal
   el('endgameFinalScore').textContent = score.us + ' – ' + score.them;
@@ -1530,7 +1599,7 @@ function openMotmModal(matchId) {
     btn.className = 'goal-player-btn';
     var isCurrent = (match.motm === p);
     btn.innerHTML = '<div class="ga" style="' + (isCurrent ? 'background:#b8860b' : '') + '">' + p[0] + '</div>' +
-      p + (isCurrent ? ' <span style="font-size:0.65rem;color:#ffd700">★</span>' : '');
+      p + (isCurrent ? ' ' + icon('star','solo') : '');
     btn.onclick = function() { setMotm(matchId, p); };
     grid.appendChild(btn);
   });
@@ -1593,7 +1662,7 @@ function renderHistory() {
   if (!history.length) {
     wrap.innerHTML =
       '<div class="history-empty">' +
-        '<div class="big-icon">📋</div>' +
+        '<div class="big-icon">' + icon('clipboard') + '</div>' +
         '<p>No matches saved yet.<br>Complete a match and save it to see history here.</p>' +
       '</div>';
     return;
@@ -1623,8 +1692,8 @@ function renderHistory() {
     history.forEach(function(m){ html += buildHistoryCard(m); });
     html +=
       '<div style="display:flex;gap:10px;margin-top:18px;">' +
-        '<button onclick="exportData()" style="flex:1;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;background:#ffffff0d;border:1px solid #ffffff22;color:var(--off-white);border-radius:10px;padding:11px;cursor:pointer;">⬆ Export Backup</button>' +
-        '<button onclick="triggerImport()" style="flex:1;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;background:#ffffff0d;border:1px solid #ffffff22;color:var(--off-white);border-radius:10px;padding:11px;cursor:pointer;">⬇ Import Backup</button>' +
+        '<button onclick="exportData()" style="flex:1;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;background:#ffffff0d;border:1px solid #ffffff22;color:var(--off-white);border-radius:10px;padding:11px;cursor:pointer;">' + icon('exportIc') + 'Export Backup</button>' +
+        '<button onclick="triggerImport()" style="flex:1;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;background:#ffffff0d;border:1px solid #ffffff22;color:var(--off-white);border-radius:10px;padding:11px;cursor:pointer;">' + icon('importIc') + 'Import Backup</button>' +
       '</div>';
   }
 
@@ -1730,10 +1799,10 @@ function buildHistoryCard(m) {
     ? m.scorers.map(function(s){ return s.name; })
     : [];
   var scorerChips = scorerNames.length
-    ? scorerNames.map(function(n){ return '<span class="scorer-chip">⚽ ' + esc(n) + '</span>'; }).join('')
+    ? scorerNames.map(function(n){ return '<span class="scorer-chip">' + icon('ball') + esc(n) + '</span>'; }).join('')
     : '<span style="font-size:0.68rem;color:var(--gray)">No scorers recorded</span>';
-  var motmChip = m.motm ? '<span class="motm-chip">⭐ ' + esc(m.motm) + '</span>' : '';
-  var motmLabel = m.motm ? '⭐ Change MOTM' : '⭐ Man of Match';
+  var motmChip = m.motm ? '<span class="motm-chip">' + icon('star') + esc(m.motm) + '</span>' : '';
+  var motmLabel = icon('star') + (m.motm ? 'Change MOTM' : 'Man of Match');
 
   return '<div class="history-card ' + m.result + '">' +
     '<div class="hcard-top">' +
@@ -1749,7 +1818,7 @@ function buildHistoryCard(m) {
     '<div class="hcard-scorers">' + scorerChips + (motmChip ? ' ' + motmChip : '') + '</div>' +
     '<div class="hcard-actions">' +
       '<button class="hcard-btn hcard-btn-motm" onclick="openMotmModal(' + m.id + ')">' + motmLabel + '</button>' +
-      '<button class="hcard-btn hcard-btn-del"  onclick="deleteMatch(' + m.id + ')">🗑 Delete Match</button>' +
+      '<button class="hcard-btn hcard-btn-del"  onclick="deleteMatch(' + m.id + ')">' + icon('trash') + 'Delete Match</button>' +
     '</div>' +
   '</div>';
 }
@@ -1793,13 +1862,13 @@ function checkSubRecommendation() {
   var fairShare = (HALF_SECS*2)/activePlayers.length;
   var diff = liveTime(sub.playerOut) - liveTime(sub.playerIn);
   if (diff > fairShare*0.55) {
-    el('subAlertTitle').textContent  = 'Sub: ' + sub.playerIn + ' ON \u2194 ' + sub.playerOut + ' OFF';
+    el('subAlertTitle').textContent  = 'Sub: ' + sub.playerIn + ' on for ' + sub.playerOut;
     el('subAlertDetail').textContent = sub.playerOut+': '+fmt(liveTime(sub.playerOut))+' on field  \u00b7  '+sub.playerIn+': '+fmt(liveTime(sub.playerIn))+' played';
     el('subAlert').classList.add('show');
     el('btnSub').disabled = false;
     if (state.totalElapsed - lastSubNotif > 60) {
       lastSubNotif = state.totalElapsed;
-      sendPush('\u26bd Time to Sub!', sub.playerIn+' ON \u2194 '+sub.playerOut+' OFF');
+      sendPush('Time to Sub', sub.playerIn+' on for '+sub.playerOut);
     }
   } else { el('subAlert').classList.remove('show'); }
 }
@@ -1829,7 +1898,7 @@ function renderSubModal() {
     var isRec = (p === rec.playerOut);
     var isSel = (p === subPick.playerOut);
     var cls = 'sub-player-row' + (isSel ? ' selected' : isRec ? ' recommended' : '');
-    var tag = isSel ? '<span class="sel-tag">✓ Off</span>' : (isRec ? '<span class="rec-tag">Suggested</span>' : '');
+    var tag = isSel ? '<span class="sel-tag">' + icon('check','solo') + ' Off</span>' : (isRec ? '<span class="rec-tag">Suggested</span>' : '');
     offHTML +=
       '<div class="' + cls + '" onclick="pickOff(\'' + p + '\')">' +
         '<div class="spr-avatar">' + p[0] + '</div>' +
@@ -1847,7 +1916,7 @@ function renderSubModal() {
     var isRec = (p === rec.playerIn);
     var isSel = (p === subPick.playerIn);
     var cls = 'sub-player-row' + (isSel ? ' selected' : isRec ? ' recommended' : '');
-    var tag = isSel ? '<span class="sel-tag">✓ On</span>' : (isRec ? '<span class="rec-tag">Suggested</span>' : '');
+    var tag = isSel ? '<span class="sel-tag">' + icon('check','solo') + ' On</span>' : (isRec ? '<span class="rec-tag">Suggested</span>' : '');
     onHTML +=
       '<div class="' + cls + '" onclick="pickOn(\'' + p + '\')">' +
         '<div class="spr-avatar">' + p[0] + '</div>' +
@@ -1861,9 +1930,9 @@ function renderSubModal() {
 
   // Step indicators
   el('stepNum1').className = 'step-num' + (subPick.playerOut ? ' done' : '');
-  el('stepNum1').textContent = subPick.playerOut ? '✓' : '1';
+  el('stepNum1').innerHTML = subPick.playerOut ? icon('check','solo') : '1';
   el('stepNum2').className = 'step-num' + (subPick.playerIn ? ' done' : '');
-  el('stepNum2').textContent = subPick.playerIn ? '✓' : '2';
+  el('stepNum2').innerHTML = subPick.playerIn ? icon('check','solo') : '2';
 
   el('btnConfirmSub').disabled = !(subPick.playerOut && subPick.playerIn);
 }
@@ -1895,7 +1964,7 @@ function confirmSub() {
   state.fieldStart[pIn]  = state.totalElapsed;
   state.fieldStart[pOut] = null;
 
-  addLog(state.totalElapsed, '\u21d4 ' + pIn + ' ON \u00b7 ' + pOut + ' OFF');
+  addLog(state.totalElapsed, esc(pIn) + ' on for ' + esc(pOut), 'sub');
   el('subAlert').classList.remove('show');
   lastSubNotif = state.totalElapsed;
   closeSubModal();
@@ -1932,15 +2001,15 @@ function playAlarm(type) {
 
   // Push notification
   if (type === 'halftime') {
-    sendPush('⏸ Half Time!', 'Score: ' + score.us + '–' + score.them + ' · 20 mins remaining');
+    sendPush('Half Time', 'Score: ' + score.us + '–' + score.them + ' · 20 mins remaining');
   } else {
-    sendPush('🏁 Full Time!', 'Final score: ' + score.us + '–' + score.them);
+    sendPush('Full Time', 'Final score: ' + score.us + '–' + score.them);
   }
 }
 
 // ── HELPERS ──────────────────────────────────────────────────
 function el(id){ return document.getElementById(id); }
-function addLog(t,msg){ state.log.unshift({t:t,msg:msg}); }
+function addLog(t,msg,ic,cls){ state.log.unshift({t:t,msg:msg,ic:ic,cls:cls}); }
 function fmt(secs){
   var m=String(Math.floor(secs/60)).padStart(2,'0');
   var s=String(secs%60).padStart(2,'0');
@@ -1964,7 +2033,7 @@ function render() {
     var t=liveTime(p), isOut=(p===sub.playerOut&&state.benchPlayers.length>0);
     var pct=Math.min(100,(t/fairShare)*100);
     var barCls=t>fairShare*1.35?'overdue':t>fairShare?'over-target':'';
-    var badge=isOut?'<span class="pbadge pbadge-out">\u25b2 Sub Off</span>':'<span class="pbadge pbadge-on">On</span>';
+    var badge=isOut?'<span class="pbadge pbadge-out">' + icon('arrowDown') + 'Sub Off</span>':'<span class="pbadge pbadge-on">On</span>';
     fieldHTML+='<div class="player-card on-field'+(isOut?' next-out':'')+'">'+
       '<div class="player-avatar">'+p[0]+'</div>'+
       '<div class="player-info">'+
@@ -1979,7 +2048,7 @@ function render() {
   state.benchPlayers.forEach(function(p){
     var t=liveTime(p), isIn=(p===sub.playerIn);
     var pct=Math.min(100,(t/fairShare)*100);
-    var badge=isIn?'<span class="pbadge pbadge-in">\u25bc Sub On</span>':'<span class="pbadge pbadge-bench">Bench</span>';
+    var badge=isIn?'<span class="pbadge pbadge-in">' + icon('arrowUp') + 'Sub On</span>':'<span class="pbadge pbadge-bench">Bench</span>';
     benchHTML+='<div class="player-card'+(isIn?' next-in':'')+'">'+
       '<div class="player-avatar">'+p[0]+'</div>'+
       '<div class="player-info">'+
@@ -1993,13 +2062,14 @@ function render() {
   el('fieldCount').textContent=state.fieldPlayers.length+'/'+Math.min(FIELD_SIZE,activePlayers.length);
   el('benchCount').textContent=state.benchPlayers.length;
   el('logList').innerHTML=state.log.slice(0,20).map(function(l){
-    return '<div class="log-item"><span class="log-time">'+fmt(l.t)+'</span>'+l.msg+'</div>';
+    return '<div class="log-item"><span class="log-time">'+fmt(l.t)+'</span>'+(l.ic?icon(l.ic,l.cls):'')+'<span>'+l.msg+'</span></div>';
   }).join('');
 }
 
 // ── BOOT ─────────────────────────────────────────────────────
 var activeTeam = getActiveTeam();
 if (activeTeam) { applyTeam(activeTeam); }
+hydrateIcons();
 buildNav();
 if (activeTeam) renderSquadScreen();
 showScreen('screenTeams');
@@ -2027,7 +2097,7 @@ function showUpdateBanner() {
     'display:flex;align-items:center;gap:10px;font-size:0.8rem;box-shadow:0 4px 20px #0008';
   b.innerHTML = '<span style="flex:1">A new version of SubTracker is ready.</span>' +
     '<button onclick="location.reload()" style="background:var(--red-light);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-weight:700;font-size:0.72rem;text-transform:uppercase;cursor:pointer">Update</button>' +
-    '<button onclick="this.parentNode.remove()" style="background:none;border:none;color:var(--gray);font-size:1rem;cursor:pointer">✕</button>';
+    '<button onclick="this.parentNode.remove()" style="background:none;border:none;color:var(--gray);font-size:1rem;cursor:pointer">' + icon('x','solo') + '</button>';
   document.body.appendChild(b);
 }
 </script>

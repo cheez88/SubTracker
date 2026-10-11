@@ -1,6 +1,6 @@
 // SubTracker service worker
 // Bump VERSION whenever you upload a new version of the app.
-var VERSION = 'v3';
+var VERSION = 'v6';
 var CACHE = 'subtracker-' + VERSION;
 var APP_SHELL = [
   './',
@@ -9,7 +9,8 @@ var APP_SHELL = [
   'apple-touch-icon.png',
   'icon-192.png',
   'icon-512.png',
-  'icon-maskable-512.png'
+  'icon-maskable-512.png',
+  'logo-ball.png'
 ];
 
 self.addEventListener('install', function (e) {
