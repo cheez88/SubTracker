@@ -1128,6 +1128,7 @@ function showScreen(id) {
   el('navMatch').classList.toggle('active',   id==='screenMatch');
   el('navHistory').classList.toggle('active', id==='screenHistory');
   if (id === 'screenHistory') renderHistory();
+  if (typeof maybeShowPendingUpdate === 'function') maybeShowPendingUpdate();
   if (id === 'screenTeams')   renderTeams();
 }
 
@@ -1892,7 +1893,8 @@ function backupButtons() {
       '<button onclick="exportData()" style="' + st + '">' + icon('exportIc') + 'Export Backup</button>' +
       '<button onclick="triggerImport()" style="' + st + '">' + icon('importIc') + 'Import Backup</button>' +
     '</div>' +
-    '<p style="text-align:center;font-size:0.7rem;color:var(--gray);margin-top:8px">Backups include your teams and all saved matches.</p>';
+    '<p style="text-align:center;font-size:0.7rem;color:var(--gray);margin-top:8px">Backups include your teams and all saved matches.</p>' +
+    '<p style="text-align:center;font-size:0.62rem;color:#ffffff40;margin-top:14px;letter-spacing:1px">SUBTRACKER ' + APP_VERSION.toUpperCase() + '</p>';
 }
 
 function setHistoryFilter(val) {
@@ -2285,18 +2287,52 @@ if (activeTeam) renderSquadScreen();
 showScreen('screenTeams');
 
 // ── OFFLINE / INSTALL SUPPORT ────────────────────────────────
+// Keep in step with VERSION in sw.js
+var APP_VERSION = 'v10';
+var swReg = null, updatePending = false;
+
+function matchInProgress() { return state.log.length > 0 && !state.gameOver; }
+
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('sw.js').then(function(reg) {
-      // When a new version is downloaded, offer a refresh
+      swReg = reg;
+      // An update may have finished downloading in an earlier session
+      if (reg.waiting && navigator.serviceWorker.controller) offerUpdate();
       reg.addEventListener('updatefound', function() {
         var nw = reg.installing;
         nw && nw.addEventListener('statechange', function() {
-          if (nw.state === 'installed' && navigator.serviceWorker.controller) showUpdateBanner();
+          if (nw.state === 'installed' && navigator.serviceWorker.controller) offerUpdate();
         });
       });
+      // iPhone resumes the app rather than restarting it, so check again each time it comes back
+      document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible') reg.update().catch(function(){});
+      });
+      setInterval(function(){ reg.update().catch(function(){}); }, 30 * 60 * 1000);
+      reg.update().catch(function(){});
     }).catch(function(){});
+
+    var reloading = false;
+    navigator.serviceWorker.addEventListener('controllerchange', function() {
+      if (reloading || !updatePending) return;
+      reloading = true; location.reload();
+    });
   });
+}
+
+// Don't interrupt a live match: hold the banner until the match is over
+function offerUpdate() {
+  updatePending = true;
+  if (!matchInProgress()) showUpdateBanner();
+}
+function maybeShowPendingUpdate() {
+  if (updatePending && !matchInProgress()) showUpdateBanner();
+}
+function applyUpdate() {
+  var w = swReg && swReg.waiting;
+  if (w) { w.postMessage('SKIP_WAITING'); setTimeout(function(){ location.reload(); }, 1500); }
+  else location.reload();
 }
 function showUpdateBanner() {
   if (el('updateBanner')) return;
@@ -2306,7 +2342,7 @@ function showUpdateBanner() {
     'background:var(--card2);border:1px solid var(--red-light);border-radius:12px;padding:10px 12px;' +
     'display:flex;align-items:center;gap:10px;font-size:0.8rem;box-shadow:0 4px 20px #0008';
   b.innerHTML = '<span style="flex:1">A new version of SubTracker is ready.</span>' +
-    '<button onclick="location.reload()" style="background:var(--red-light);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-weight:700;font-size:0.72rem;text-transform:uppercase;cursor:pointer">Update</button>' +
+    '<button onclick="applyUpdate()" style="background:var(--red-light);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-weight:700;font-size:0.72rem;text-transform:uppercase;cursor:pointer">Update</button>' +
     '<button onclick="this.parentNode.remove()" style="background:none;border:none;color:var(--gray);font-size:1rem;cursor:pointer">' + icon('x','solo') + '</button>';
   document.body.appendChild(b);
 }

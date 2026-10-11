@@ -1,6 +1,6 @@
 // SubTracker service worker
 // Bump VERSION whenever you upload a new version of the app.
-var VERSION = 'v9';
+var VERSION = 'v10';
 var CACHE = 'subtracker-' + VERSION;
 var APP_SHELL = [
   './',
@@ -36,7 +36,7 @@ function networkFirst(req) {
         if (hit && !settled) { settled = true; resolve(hit); }
       });
     }, 3000);
-    fetch(req).then(function (res) {
+    fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' }).then(function (res) {
       clearTimeout(timer);
       var copy = res.clone();
       caches.open(CACHE).then(function (c) { c.put(req, copy); });
@@ -75,6 +75,11 @@ self.addEventListener('fetch', function (e) {
              url.hostname === 'fonts.gstatic.com') {
     e.respondWith(cacheFirst(req));
   }
+});
+
+// The page asks the new version to take over when you tap Update
+self.addEventListener('message', function (e) {
+  if (e.data === 'SKIP_WAITING') self.skipWaiting();
 });
 
 // Tapping a notification brings the app back to the front
